@@ -16,7 +16,7 @@ namespace Mikrotik.Exporter
                 .AddHealthChecks()
                 .AddCheck<RemoteDeviceHealthCheck>("Remote Device").Services
                 .AddHostedService<ScrapMetricsHostedService>()
-                .AddScoped<MikrotikConfigurationProvider>()
+                .AddSingleton<MikrotikConfigurationProvider>()
                 .AddSingleton<MikrotikMetricsProvider>()
                 .AddMediatR(x => x.RegisterServicesFromAssemblyContaining<Program>());
 
