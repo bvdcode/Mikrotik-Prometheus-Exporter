@@ -1,0 +1,16 @@
+@Mikrotik.Exporter_HostAddress = http://localhost:5112
+
+GET {{Mikrotik.Exporter_HostAddress}}/metrics
+Accept: application/json
+
+###
+
+GET {{Mikrotik.Exporter_HostAddress}}/health
+Accept: application/json
+
+###
+
+GET {{Mikrotik.Exporter_HostAddress}}/healthz
+Accept: application/json
+
+###
