@@ -1,5 +1,7 @@
 using Mikrotik.Exporter.Services;
+using Mikrotik.Exporter.Providers;
 using Mikrotik.Exporter.HealthChecks;
+using EasyExtensions.AspNetCore.Extensions;
 
 namespace Mikrotik.Exporter
 {
@@ -10,9 +12,11 @@ namespace Mikrotik.Exporter
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllers();
             builder.Services
+                .AddCpuUsageService()
                 .AddHealthChecks()
                 .AddCheck<RemoteDeviceHealthCheck>("Remote Device").Services
                 .AddHostedService<ScrapMetricsHostedService>()
+                .AddScoped<MikrotikConfigurationProvider>()
                 .AddMediatR(x => x.RegisterServicesFromAssemblyContaining<Program>());
 
             var app = builder.Build();
