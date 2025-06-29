@@ -15,10 +15,11 @@ namespace Mikrotik.Exporter
                 .AddCpuUsageService()
                 .AddHealthChecks()
                 .AddCheck<RemoteDeviceHealthCheck>("Remote Device").Services
-                .AddHostedService<ScrapMetricsHostedService>()
-                .AddSingleton<MikrotikConfigurationProvider>()
                 .AddSingleton<MikrotikMetricsProvider>()
-                .AddMediatR(x => x.RegisterServicesFromAssemblyContaining<Program>());
+                .AddSingleton<ScrapMetricsHostedService>()
+                .AddSingleton<MikrotikConfigurationProvider>()
+                .AddMediatR(x => x.RegisterServicesFromAssemblyContaining<Program>())
+                .AddHostedService(provider => provider.GetRequiredService<ScrapMetricsHostedService>());
 
             var app = builder.Build();
             app.UseAuthentication()

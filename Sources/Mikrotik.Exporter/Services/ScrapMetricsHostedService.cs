@@ -1,14 +1,15 @@
 ﻿using EasyExtensions.Services;
+using Mikrotik.Exporter.Providers;
 
 namespace Mikrotik.Exporter.Services
 {
     public class ScrapMetricsHostedService(ILogger<ScrapMetricsHostedService> _logger, 
-        CpuUsageService _cpuUsageService) : BackgroundService
+        CpuUsageService _cpuUsageService, MikrotikMetricsProvider _provider) : BackgroundService
     {
         public IReadOnlyDictionary<string, double> Metrics => _scrapMetrics;
 
         private readonly Dictionary<string, double> _scrapMetrics = new(StringComparer.OrdinalIgnoreCase);
-        private readonly TimeSpan _scrapMetricsInterval = TimeSpan.FromSeconds(10);
+        private readonly TimeSpan _scrapMetricsInterval = TimeSpan.FromSeconds(60);
         private const string _scrapMetricsPrefix = "mikrotik_exporter_";
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,6 +34,12 @@ namespace Mikrotik.Exporter.Services
             _scrapMetrics[_scrapMetricsPrefix + "version"] = 1.0;
             _scrapMetrics[_scrapMetricsPrefix + "cpu_usage"] = _cpuUsageService.GetUsage().CpuUsage;
             _scrapMetrics[_scrapMetricsPrefix + "uptime"] = _cpuUsageService.GetUsage().Uptime.TotalSeconds;
+
+            var result = _provider.ExecuteCommand("ip address print"); // code sample
+            foreach (var line in result)
+            {
+                _scrapMetrics[_scrapMetricsPrefix + "ip_address_" + line] = 1.0;
+            }
         }
     }
 }

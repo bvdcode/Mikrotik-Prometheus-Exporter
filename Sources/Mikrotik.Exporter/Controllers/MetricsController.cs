@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Mikrotik.Exporter.Services;
 
 namespace Mikrotik.Exporter.Controllers
 {
-    public class MetricsController : ControllerBase
+    public class MetricsController(ScrapMetricsHostedService _metrics) : ControllerBase
     {
         [HttpGet("/metrics")]
         [Produces("text/plain", "application/json")]
         public IActionResult GetMetrics()
         {
-            var metrics = "# HELP example_metric An example metric\n" +
-                          "# TYPE example_metric gauge\n" +
-                          "example_metric{label=\"value\"} 42\n";
-            return Content(metrics, "text/plain");
+            string result = _metrics.Metrics
+                .Select(kv => $"{kv.Key} {kv.Value}")
+                .Aggregate((current, next) => current + Environment.NewLine + next);
+
+            return Content(result, "text/plain");
         }
     }
 }
