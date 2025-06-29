@@ -37,3 +37,4 @@ msbuild.wrn
 *.sqlite-wal
 *.key
 data
+appsettings.Development.json
