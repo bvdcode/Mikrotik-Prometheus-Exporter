@@ -4,6 +4,9 @@ A minimalistic Prometheus exporter that grabs RX/TX byte counters from MikroTik 
 
 This exporter is designed to make it easier to monitor the traffic and status of MikroTik network interfaces with Prometheus without the pain of dealing with overly complex configurations or non-standard protocols.
 
+> This project is paused for now, but it serves as a good example of how to create a simple Prometheus exporter for MikroTik devices.
+> Just one thing to implement is `IMetricGrabber` and all metrics will be automatically registered and exposed.
+
 ---
 
 ## Features
@@ -26,6 +29,7 @@ environment:
   - MIKROTIK_PORT=8728 # API port (default: 8728, non-SSL)
   - MIKROTIK_USERNAME=admin # Username for MikroTik API login
   - MIKROTIK_PASSWORD=passw0rd # Password for MikroTik API login
+  - MIKROTIK_SCRAP_METRICS_PREFIX=mikrotik_ # Prefix for the exported metrics (optional, default: mikrotik_exporter_)
 ```
 
 These values can be set as environment variables or passed in your Docker setup (if using Docker).
